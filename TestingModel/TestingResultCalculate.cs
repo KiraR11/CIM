@@ -1,5 +1,4 @@
-﻿
-namespace Testing
+﻿namespace TestingModel
 {
     public class TestingResultCalculate
     {

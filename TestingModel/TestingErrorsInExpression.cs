@@ -1,4 +1,4 @@
-﻿namespace Testing
+﻿namespace TestingModel
 {
     public class TestingErrorsInExpression
     {
