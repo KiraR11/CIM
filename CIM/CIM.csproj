@@ -7,4 +7,20 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
+    <PackageReference Include="ScottPlot" Version="5.0.10-beta" />
+    <PackageReference Include="ScottPlot.WPF" Version="5.0.10-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ScottPlot">
+      <HintPath>..\..\..\..\.nuget\packages\scottplot\5.0.10-beta\lib\net8.0\ScottPlot.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Model_MathOperation\Model_MathOperation.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -7,7 +7,7 @@ namespace TestingModel
         [Fact]
         public void TestLastValueNumberOne()
         {
-            CubicInterpolation method = new CubicInterpolation("2x^2+16/x", "4x-16/x^2", 1, 1, 0.01);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01);
 
             PointDouble actual = method.FindAbsoluteMin().Last(); 
 

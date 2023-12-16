@@ -3,10 +3,60 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CIM"
+        xmlns:local="clr-namespace:CIM" 
+        xmlns:wpf="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        xmlns:wpff="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="500" Width="820" MinHeight="500" MinWidth="820">
+
+    <Grid Name="grid1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="GridUserInput" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Введите функцию:" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="1" Margin="10" VerticalAlignment="Top" Name="tb_Fun" Text="2x^2+16/x"/>
+            
+            <TextBlock Text="Введите производную функции:" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="3" Margin="10" VerticalAlignment="Top" Name="tb_DefFun" Text="4x-16/x^2"/>
+
+            <TextBlock Text="Введите коор-ту начальной точки:" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="5" Margin="10" VerticalAlignment="Top" Name="tb_StartPoint" Text="1"/>
+
+            <TextBlock Text="Введите шаг:" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="6" VerticalAlignment="Center" Name="tb_Step" Margin="120,0,10,0" Text="1"/>
+            
+            <TextBlock Text="Введите точность:" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="7" VerticalAlignment="Center" Name="tb_Accuracy" Margin="120,0,10,0" Text="0,01"/>
+
+            <Button Grid.Row="8" Content="Найти минимум функции" Width="150" Height="25" Click="Button_Click"/>
+        </Grid>
+        <TabControl Grid.Column="1">
+            <TabItem Header="График">
+                <StackPanel>
+                    <wpff:PlotView Name="chart" MinHeight="400" MinWidth="400"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Таблица">
+                <DataGrid x:Name="dg_OutputResult"/>
+            </TabItem>
+            <TabItem Header="Инструкция">
+                
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>

@@ -7,10 +7,10 @@ namespace Math_Model
 {
     public class CubicInterpolation
     {
-        public CubicInterpolation(string function, string derivativeFunction,double startPoint, double step, double accuracy)
+        public CubicInterpolation(Equation function, Equation derivativeFunction,double startPoint, double step, double accuracy)
         {
-            Function = new Equation(function);
-            DerivativeFunction = new Equation(derivativeFunction);
+            Function = function;
+            DerivativeFunction = derivativeFunction;
             StartPoint = startPoint;
             Step = step;
             Accuracy = accuracy;
