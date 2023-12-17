@@ -3,9 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CIM" 
+        
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
         xmlns:wpf="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         xmlns:wpff="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+        
+        xmlns:local="clr-namespace:CIM" 
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="820" MinHeight="500" MinWidth="820">
 
@@ -47,7 +51,7 @@
         <TabControl Grid.Column="1">
             <TabItem Header="График">
                 <StackPanel>
-                    <wpff:PlotView Name="chart" MinHeight="400" MinWidth="400"/>
+                    <WpfPlot Name="chart_scottPlot" MinHeight="400" MinWidth="400" />
                 </StackPanel>
             </TabItem>
             <TabItem Header="Таблица">

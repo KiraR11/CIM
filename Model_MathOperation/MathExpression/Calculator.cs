@@ -40,7 +40,14 @@ namespace Math_Model.MathExpression
                 if (i2 >= 0) return StepCalculate(expression.Substring(0, i2)) * StepCalculate(expression.Substring(i2 + 1));
 
                 int i3 = expression.LastIndexOf("/");
-                if (i3 >= 0) return StepCalculate(expression.Substring(0, i3)) / StepCalculate(expression.Substring(i3 + 1));
+                if (i3 >= 0) 
+                {
+                    double del = StepCalculate(expression.Substring(i3 + 1));
+                    if (del != 0)
+                        return StepCalculate(expression.Substring(0, i3)) / del;
+                    else
+                        throw new Exception("деление на ноль");
+                }
 
                 int i4 = expression.LastIndexOf("^");
                 if (i4 >= 0) return Math.Pow(StepCalculate(expression.Substring(0, i4)), StepCalculate(expression.Substring(i4 + 1)));

@@ -9,11 +9,18 @@ namespace Math_Model
     {
         public CubicInterpolation(Equation function, Equation derivativeFunction,double startPoint, double step, double accuracy)
         {
-            Function = function;
-            DerivativeFunction = derivativeFunction;
-            StartPoint = startPoint;
-            Step = step;
-            Accuracy = accuracy;
+            if (step <= 0)
+                throw new Exception("шаг должен быть больше нуля");
+            if (accuracy <= 0)
+                throw new Exception("точность должена быть больше нуля");
+            else
+            {
+                Function = function;
+                DerivativeFunction = derivativeFunction;
+                StartPoint = startPoint;
+                Step = step;
+                Accuracy = accuracy;
+            }
         }
         public Equation Function { get; }
         public Equation DerivativeFunction { get; }

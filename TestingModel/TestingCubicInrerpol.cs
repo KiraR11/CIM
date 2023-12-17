@@ -5,6 +5,18 @@ namespace TestingModel
     public class TestingCubicInrerpol
     {
         [Fact]
+        public void SolveFromNegativPoint()
+        {
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), -1, 1, 0.01);
+
+            PointDouble actual = method.FindAbsoluteMin().Last();
+
+            PointDouble expected = new PointDouble(1.588, 15.119);
+
+            Assert.Equal(actual.X, expected.X, 0.0001);
+            Assert.Equal(actual.Y, expected.Y, 0.0001);
+        }
+        [Fact]
         public void TestLastValueNumberOne()
         {
             CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01);

@@ -24,20 +24,21 @@ namespace Math_Model.MathExpression
 
         public double Solve(double argument)
         {
-            string expression = ReplaceArgument(argument);
+            string argumentStr = ArgumemtToString(argument);
+            string expression = ReplaceArgument(argumentStr);
             Calculator calculator = new Calculator(expression);
             return calculator.Result;
         }
-        public string ReplaceArgument(double argument)
+        public string ReplaceArgument(string argumentStr)
         {
             string[] partsFormula = Formula.Split('x');
             for (int i = 0; i < partsFormula.Length - 1; i++)
             {
                 int indexEndPartForlula = partsFormula[i].Length - 1;
                 if (char.IsDigit(partsFormula[i][indexEndPartForlula]))
-                    partsFormula[i] += '*' + argument.ToString();
+                    partsFormula[i] += '*' + argumentStr;
                 else
-                    partsFormula[i] += argument.ToString();
+                    partsFormula[i] += argumentStr;
             }
 
             StringBuilder sb = new StringBuilder();
@@ -45,6 +46,15 @@ namespace Math_Model.MathExpression
             string expression = sb.ToString();
 
             return expression;
+        }
+        private string ArgumemtToString(double argument)
+        {
+            string argumentStr;
+            if (argument < 0)
+                argumentStr = '(' + argument.ToString() + ')';
+            else
+                argumentStr = argument.ToString();
+            return argumentStr;
         }
     }
 }

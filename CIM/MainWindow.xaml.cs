@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using Math_Model;
 using Math_Model.MathExpression;
 using Model_MathOperation;
@@ -21,54 +23,83 @@ namespace CIM
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Equation fun;
+            Equation defFun;
             CubicInterpolation cubicInterpolation;
+            double startPoint;
+            double step;
+            double accuracy;
+            List<PointDouble> points;
+
             try
             {
-                Equation fun = new Equation(tb_Fun.Text);
-                Equation defFun = new Equation(tb_DefFun.Text);
-                double startPoint = Double.Parse(tb_StartPoint.Text);
-                double step = Double.Parse(tb_Step.Text);
-                double accuracy = Double.Parse(tb_Accuracy.Text);
-                cubicInterpolation = new CubicInterpolation(fun, defFun, startPoint, step, accuracy);
-
-
-                List<PointDouble> points = cubicInterpolation.FindAbsoluteMin();
-                InputTable(points);
-                InputChart(points);
+                startPoint = Double.Parse(tb_StartPoint.Text);
+                step = Double.Parse(tb_Step.Text);
+                accuracy = Double.Parse(tb_Accuracy.Text);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Некорректные данные", $"Ошибка: {ex.Message}");
+                MessageBox.Show($"Ошибка: {ex.Message}","Некорректные данные в параменрах метода");
+                return;
             }
-            
 
+            if (CheckCoorectFunInput(tb_Fun.Text))
+                fun = new Equation(tb_Fun.Text);
+            else return;
+
+            if (CheckCoorectFunInput(tb_DefFun.Text))
+                defFun = new Equation(tb_DefFun.Text);
+            else return;
+
+
+            try
+            {
+                cubicInterpolation = new CubicInterpolation(fun, defFun, startPoint, step, accuracy);
+                points = cubicInterpolation.FindAbsoluteMin();
+                InputTable(points);
+                InputChartScottPlot(points);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}", "Некорректные данные при подсчете");
+                return;
+            }
+
+            try
+            {
+                InputTable(points);
+                InputChartScottPlot(points);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка при отрисовке");
+            }
+        }
+        public bool CheckCoorectFunInput(string textFun)
+        {
+            try
+            {
+                Equation equation = new Equation(textFun);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}", "Некорректные данные в функциях");
+                return false;
+            }
         }
         private void InputTable(List<PointDouble> points) 
         { 
             dg_OutputResult.ItemsSource = points;
         }
-        private void InputChart(List<PointDouble> points)
+        private void InputChartScottPlot(List<PointDouble> points)
         {
-            List<OxyPlot.DataPoint> pointsGrup = ConvertPointDoubleInDataPoint(points);
-            chart.Model = new PlotModel { Title = "Метод кубической интерполяции" };
-            FunctionSeries fs = new FunctionSeries();
-            fs.Points.AddRange(pointsGrup);
-            chart.Model.Series.Add(fs);
-            
-            chart.ResetAllAxes();
-            chart.Focus();
-        }
-        private List<OxyPlot.DataPoint> ConvertPointDoubleInDataPoint(List<PointDouble> pointsDouble)
-        {
-            List<OxyPlot.DataPoint> pointsGrup = new List<OxyPlot.DataPoint>();
+            chart_scottPlot.Plot.Clear();
+             double[] dataX = points.Select(point => point.X).ToArray();
+             double[] dataY = points.Select(point => point.Y).ToArray();
 
-            foreach (PointDouble pointDouble in pointsDouble)
-            {
-                OxyPlot.DataPoint x = new OxyPlot.DataPoint(pointDouble.X,pointDouble.Y);
-                pointsGrup.Add(x);
-            }
-            return pointsGrup;
+            chart_scottPlot.Plot.AddScatter(dataX,dataY);
+            chart_scottPlot.Refresh();
         }
-
     }
 }

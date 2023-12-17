@@ -5,12 +5,13 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
-    <PackageReference Include="ScottPlot" Version="5.0.10-beta" />
-    <PackageReference Include="ScottPlot.WPF" Version="5.0.10-beta" />
+    <PackageReference Include="ScottPlot.WPF" Version="4.1.69" />
+    <PackageReference Include="WinForms.DataVisualization" Version="1.9.1" />
   </ItemGroup>
 
   <ItemGroup>
