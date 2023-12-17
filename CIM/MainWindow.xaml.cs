@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using Math_Model;
 using Math_Model.MathExpression;
 using Model_MathOperation;
+using Model_MathOperation.MathExpression;
 using OxyPlot;
 using OxyPlot.Series;
 using ScottPlot;
@@ -30,7 +31,7 @@ namespace CIM
             float startPoint;
             float step;
             float accuracy;
-            List<PointF> points;
+            List<ResultCIM> points;
 
             try
             {
@@ -57,8 +58,6 @@ namespace CIM
             {
                 cubicInterpolation = new CubicInterpolation(fun, defFun, startPoint, step, accuracy);
                 points = cubicInterpolation.FindAbsoluteMin();
-                InputTable(points);
-                InputChartScottPlot(points);
             }
             catch (Exception ex)
             {
@@ -68,7 +67,7 @@ namespace CIM
 
             try
             {
-                InputTable(points);
+                //InputTable(points);
                 InputChartScottPlot(points);
             }
             catch (Exception ex)
@@ -93,13 +92,32 @@ namespace CIM
         { 
             dg_OutputResult.ItemsSource = points;
         }
-        private void InputChartScottPlot(List<PointF> points)
+        private void InputChartScottPlot(List<ResultCIM> points)
         {
             chart_scottPlot.Plot.Clear();
-             double[] dataX = points.Select(point => (double)point.X).ToArray();
-             double[] dataY = points.Select(point => (double)point.Y).ToArray();
 
-            chart_scottPlot.Plot.AddScatter(dataX,dataY);
+            double[] dataX = new double[points.Count];
+            double[] dataY = new double[points.Count];
+
+            double[][] PolinomsX = new double[points.Count][];
+            double[][] PolinomsY = new double[points.Count][];
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                dataX[i] = points[i].Optimal.X;
+                dataY[i] = points[i].Optimal.Y;
+                if (points[i].PolinomInterval.Count != 0)
+                {
+                    PolinomsX[i] = points[i].PolinomInterval.Select(point => (double)point.X).ToArray();
+                    PolinomsY[i] = points[i].PolinomInterval.Select(point => (double)point.Y).ToArray();
+
+                    chart_scottPlot.Plot.AddScatter(PolinomsX[i], PolinomsY[i], Color.Blue, label: "Polinom");
+                }
+            }
+            
+            chart_scottPlot.Plot.AddScatter(dataX,dataY, Color.Green, label: "Optimization");
+            // plot the original vs interpolated lines
+            chart_scottPlot.Plot.Legend();
             chart_scottPlot.Refresh();
         }
     }

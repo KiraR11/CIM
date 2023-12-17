@@ -27,14 +27,14 @@ namespace Math_Model
         private float StartPoint { get; }
         private float Step { get; }
         private float Accuracy { get; }
-        public List<PointF> FindAbsoluteMin()
+        public List<ResultCIM> FindAbsoluteMin()
         {
-            List<PointF> result = new List<PointF>{new PointF(StartPoint, SolveValueFun(StartPoint))};
+            List<ResultCIM> result = new List<ResultCIM>() {new ResultCIM(new PointF(StartPoint,SolveValueFun(StartPoint))) };
             IntervalWithExtreme intervalWithExtreme = SolveFirstInterval();
 
-            float optimalArgument = FindOptimalArgument(intervalWithExtreme); // шаг 5-6
-            result.Add(new PointF(optimalArgument, SolveValueFun(optimalArgument)));
-            result.AddRange(LoopingSearchOptimum(intervalWithExtreme,optimalArgument));
+            ResultCIM localResult = FindOptimalArgument(intervalWithExtreme); // шаг 5-6
+            result.Add(FindOptimalArgument(intervalWithExtreme));
+            result.AddRange(LoopingSearchOptimum(intervalWithExtreme, localResult.Optimal.X));
 
             return result;
         }
@@ -51,33 +51,34 @@ namespace Math_Model
 
             return intervalWithExtreme;
         }
-        private List<PointF> LoopingSearchOptimum(IntervalWithExtreme interval, float optimalArgument)
+        private List<ResultCIM> LoopingSearchOptimum(IntervalWithExtreme interval, float optimalArgument)
         {
-            List<PointF> result = new List<PointF>();
+            List<ResultCIM> result = new List<ResultCIM>();
             IntervalWithExtreme newInterval = new IntervalWithExtreme(interval.StartPoint, interval.EndPoint);
-            while (Math.Abs(SolveValueDerivativeFun(optimalArgument)) > Accuracy && result.Count<10)
+            float ValueDerFun = SolveValueDerivativeFun(optimalArgument);
+            while (Math.Abs(ValueDerFun) > Accuracy && result.Count<10)
             {
-                if (SolveValueDerivativeFun(optimalArgument) * SolveValueDerivativeFun(newInterval.StartPoint) < 0)
+                if (ValueDerFun * SolveValueDerivativeFun(newInterval.StartPoint) < 0)
                 {
                     float secondArgument = newInterval.StartPoint;
                     float firstArgument = optimalArgument;
                     newInterval = new IntervalWithExtreme(firstArgument, secondArgument);
                 }
-                else if (SolveValueDerivativeFun(optimalArgument) * SolveValueDerivativeFun(newInterval.EndPoint) < 0)
+                else if (ValueDerFun * SolveValueDerivativeFun(newInterval.EndPoint) < 0)
                 {
                     float firstArgument = optimalArgument;
                     newInterval = new IntervalWithExtreme(firstArgument, newInterval.EndPoint);
                 }
                 else throw new Exception("хуйня");
-
-                optimalArgument = FindOptimalArgument(newInterval);
-                result.Add(new PointF(optimalArgument, SolveValueFun(optimalArgument)));
+                ResultCIM localResult = FindOptimalArgument(newInterval);
+                result.Add(localResult);
+                ValueDerFun = SolveValueDerivativeFun(localResult.Optimal.X);
             }
 
             return result;
         }
 
-        private float FindOptimalArgument(IntervalWithExtreme interval)
+        private ResultCIM FindOptimalArgument(IntervalWithExtreme interval)
         {
             float valueFunInFirstArgument = SolveValueFun(interval.StartPoint);
             float valueFunInSecondArgument = SolveValueFun(interval.EndPoint);
@@ -93,7 +94,18 @@ namespace Math_Model
 
             float optimalArgument = SolveOptimalArgument(interval,u);
 
-            return optimalArgument;
+            CubicPolinom cubicPolinom =  new CubicPolinom(interval, valueFunInFirstArgument, valueDerFunInFirstArgument, valueDerFunInSecondArgument, z);
+
+            ResultCIM result = new ResultCIM
+                (
+                new PointF(interval.StartPoint, valueFunInFirstArgument),
+                new PointF(interval.EndPoint, valueFunInSecondArgument),
+                new PointF(optimalArgument, SolveValueFun(optimalArgument)),
+                cubicPolinom.SolvePoint(interval,10)
+                );
+
+
+            return result;
         }
         private float SolveOptimalArgument(IntervalWithExtreme interval, float u)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model_MathOperation.MathExpression
 {
-    internal class IntervalWithExtreme
+    public class IntervalWithExtreme
     {
         public IntervalWithExtreme(float firstArgument, float secondArgument) 
         {
