@@ -97,9 +97,9 @@
         {
             string expression = "3,1 + 2 * 4";
 
-            double result = new Calculator(expression).Result;
+            float result = new Calculator(expression).Result;
 
-            double expected = 3.1 + 2 * 4;
+            float expected = 3.1f + 2 * 4;
 
             Assert.Equal(expected, result);
         }

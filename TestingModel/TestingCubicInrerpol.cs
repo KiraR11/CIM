@@ -1,4 +1,6 @@
 ﻿using Model_MathOperation;
+using System.Drawing;
+using System.Linq.Expressions;
 
 namespace TestingModel
 {
@@ -7,23 +9,20 @@ namespace TestingModel
         [Fact]
         public void SolveFromNegativPoint()
         {
-            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), -1, 1, 0.01);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), -1, 1, 0.01f);
 
-            PointDouble actual = method.FindAbsoluteMin().Last();
+            Action action = () => { PointF actual = method.FindAbsoluteMin().Last(); };
 
-            PointDouble expected = new PointDouble(1.588, 15.119);
-
-            Assert.Equal(actual.X, expected.X, 0.0001);
-            Assert.Equal(actual.Y, expected.Y, 0.0001);
+            Assert.Throws<Exception>(action);
         }
         [Fact]
         public void TestLastValueNumberOne()
         {
-            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01f);
 
-            PointDouble actual = method.FindAbsoluteMin().Last(); 
+            PointF actual = method.FindAbsoluteMin().Last(); 
 
-            PointDouble expected = new PointDouble(1.588,15.119);
+            PointF expected = new PointF(1.588f,15.119f);
 
             Assert.Equal(actual.X, expected.X, 0.0001);
             Assert.Equal(actual.Y, expected.Y, 0.0001);

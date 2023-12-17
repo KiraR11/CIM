@@ -8,7 +8,7 @@ namespace Model_MathOperation.MathExpression
 {
     internal class IntervalWithExtreme
     {
-        public IntervalWithExtreme(double firstArgument, double secondArgument) 
+        public IntervalWithExtreme(float firstArgument, float secondArgument) 
         {
             if (!firstArgument.Equals(secondArgument))
             {
@@ -17,8 +17,8 @@ namespace Model_MathOperation.MathExpression
             }
             else throw new ArgumentException("начало и конец интервала не должны совпадать");
         }
-        public double StartPoint { get; }
-        public double EndPoint { get; }
+        public float StartPoint { get; }
+        public float EndPoint { get; }
 
     }
 }

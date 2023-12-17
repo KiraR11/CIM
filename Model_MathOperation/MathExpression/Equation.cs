@@ -22,7 +22,7 @@ namespace Math_Model.MathExpression
         }
         public string Formula { get; }
 
-        public double Solve(double argument)
+        public float Solve(float argument)
         {
             string argumentStr = ArgumemtToString(argument);
             string expression = ReplaceArgument(argumentStr);
@@ -47,7 +47,7 @@ namespace Math_Model.MathExpression
 
             return expression;
         }
-        private string ArgumemtToString(double argument)
+        private string ArgumemtToString(float argument)
         {
             string argumentStr;
             if (argument < 0)

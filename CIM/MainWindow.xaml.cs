@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
@@ -26,16 +27,16 @@ namespace CIM
             Equation fun;
             Equation defFun;
             CubicInterpolation cubicInterpolation;
-            double startPoint;
-            double step;
-            double accuracy;
-            List<PointDouble> points;
+            float startPoint;
+            float step;
+            float accuracy;
+            List<PointF> points;
 
             try
             {
-                startPoint = Double.Parse(tb_StartPoint.Text);
-                step = Double.Parse(tb_Step.Text);
-                accuracy = Double.Parse(tb_Accuracy.Text);
+                startPoint = (float)Double.Parse(tb_StartPoint.Text);
+                step = (float)Double.Parse(tb_Step.Text);
+                accuracy = (float)Double.Parse(tb_Accuracy.Text);
             }
             catch (Exception ex)
             {
@@ -88,15 +89,15 @@ namespace CIM
                 return false;
             }
         }
-        private void InputTable(List<PointDouble> points) 
+        private void InputTable(List<PointF> points) 
         { 
             dg_OutputResult.ItemsSource = points;
         }
-        private void InputChartScottPlot(List<PointDouble> points)
+        private void InputChartScottPlot(List<PointF> points)
         {
             chart_scottPlot.Plot.Clear();
-             double[] dataX = points.Select(point => point.X).ToArray();
-             double[] dataY = points.Select(point => point.Y).ToArray();
+             double[] dataX = points.Select(point => (double)point.X).ToArray();
+             double[] dataY = points.Select(point => (double)point.Y).ToArray();
 
             chart_scottPlot.Plot.AddScatter(dataX,dataY);
             chart_scottPlot.Refresh();

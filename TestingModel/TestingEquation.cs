@@ -8,7 +8,7 @@
             Equation equation = new Equation("2*x + 5");
 
 
-            string expression = equation.ReplaceArgument(3);
+            string expression = equation.ReplaceArgument("3");
 
             string expected = "2*3 + 5";
 
@@ -20,7 +20,7 @@
         {
             Equation equation = new Equation("2x + 5");
 
-            string expression = equation.ReplaceArgument(3);
+            string expression = equation.ReplaceArgument("3");
 
             string expected = "2*3 + 5";
 

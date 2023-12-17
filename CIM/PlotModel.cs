@@ -2,6 +2,7 @@
 using OxyPlot;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace CIM
 {
     class PlotViewModel
     {
-        public PlotViewModel(List<PointDouble> plots) 
+        public PlotViewModel(List<PointF> plots) 
         {
             try
             {

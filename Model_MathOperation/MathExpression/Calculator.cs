@@ -17,16 +17,16 @@ namespace Math_Model.MathExpression
         }
         public string Expression { get; }
         private string ExpressionWithOpeningBrackets { get; }
-        public double? _result = null;
-        public double Result
+        public float? _result = null;
+        public float Result
         {
             get
             {
                 if (_result == null) _result = StepCalculate(ExpressionWithOpeningBrackets);
-                return (double)_result;
+                return (float)_result;
             }
         }
-        private static double StepCalculate(string expression)
+        private static float StepCalculate(string expression)
         {
             while (true)
             {
@@ -42,7 +42,7 @@ namespace Math_Model.MathExpression
                 int i3 = expression.LastIndexOf("/");
                 if (i3 >= 0) 
                 {
-                    double del = StepCalculate(expression.Substring(i3 + 1));
+                    float del = StepCalculate(expression.Substring(i3 + 1));
                     if (del != 0)
                         return StepCalculate(expression.Substring(0, i3)) / del;
                     else
@@ -50,14 +50,14 @@ namespace Math_Model.MathExpression
                 }
 
                 int i4 = expression.LastIndexOf("^");
-                if (i4 >= 0) return Math.Pow(StepCalculate(expression.Substring(0, i4)), StepCalculate(expression.Substring(i4 + 1)));
+                if (i4 >= 0) return  (float)Math.Pow(StepCalculate(expression.Substring(0, i4)), StepCalculate(expression.Substring(i4 + 1)));
 
                 int i5 = expression.LastIndexOf("√");
-                if (i5 >= 0) return Math.Sqrt(StepCalculate(expression.Substring(i5 + 1)));
+                if (i5 >= 0) return (float)Math.Sqrt(StepCalculate(expression.Substring(i5 + 1)));
 
 
-                double number;
-                if (double.TryParse(expression, out number))
+                float number;
+                if (float.TryParse(expression, out number))
                     return number;
                 else throw new Exception("не удалось преобразлвать строку в число");
             }
