@@ -55,8 +55,7 @@ namespace Math_Model
         {
             List<PointF> result = new List<PointF>();
             IntervalWithExtreme newInterval = new IntervalWithExtreme(interval.StartPoint, interval.EndPoint);
-
-            while (Math.Abs(SolveValueDerivativeFun(optimalArgument)) > Accuracy)
+            while (Math.Abs(SolveValueDerivativeFun(optimalArgument)) > Accuracy && result.Count<10)
             {
                 if (SolveValueDerivativeFun(optimalArgument) * SolveValueDerivativeFun(newInterval.StartPoint) < 0)
                 {

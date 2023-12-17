@@ -31,7 +31,7 @@ namespace Math_Model.MathExpression
         }
         public string ReplaceArgument(string argumentStr)
         {
-            string[] partsFormula = Formula.Split('x');
+            string[] partsFormula = SplitBySubEquatoin();
             for (int i = 0; i < partsFormula.Length - 1; i++)
             {
                 int indexEndPartForlula = partsFormula[i].Length - 1;
@@ -55,6 +55,14 @@ namespace Math_Model.MathExpression
             else
                 argumentStr = argument.ToString();
             return argumentStr;
+        }
+        private string[] SplitBySubEquatoin()
+        {
+            string[] partsFormula = Formula.Split('x');
+            if (partsFormula.Length == 1)
+                throw new ArgumentException("функция не имеет extr");
+            else
+                return partsFormula;
         }
     }
 }

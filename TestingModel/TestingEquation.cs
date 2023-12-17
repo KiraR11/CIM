@@ -27,5 +27,17 @@
             Assert.Equal(expected, expression);
 
         }
+        [Fact]
+        public void Replace_argument_in_Equation_without_arguments()
+        {
+            Equation equation = new Equation("2 + 5");
+
+            float expression = equation.Solve(3f);
+
+            float expected = 7;
+
+            Assert.Equal(expected, expression);
+
+        }
     }
 }
