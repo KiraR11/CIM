@@ -1,4 +1,5 @@
 ﻿using Model_MathOperation;
+using Model_MathOperation.MathExpression;
 using System.Drawing;
 using System.Linq.Expressions;
 
@@ -11,7 +12,7 @@ namespace TestingModel
         {
             CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), -1, 1, 0.01f);
 
-            Action action = () => { PointF actual = method.FindAbsoluteMin().Last(); };
+            Action action = () => { ResultCIM actual = method.FindAbsoluteMin().Last(); };
 
             Assert.Throws<Exception>(action);
         }
@@ -20,7 +21,7 @@ namespace TestingModel
         {
             CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01f);
 
-            PointF actual = method.FindAbsoluteMin().Last(); 
+            PointF actual = method.FindAbsoluteMin().Last().Optimal; 
 
             PointF expected = new PointF(1.588f,15.119f);
 
@@ -30,14 +31,14 @@ namespace TestingModel
         [Fact]
         public void TestLastValueNumberTwo()
         {
-            /*CubicInterpolation method = new CubicInterpolation("2x^2+16/x", "4x-16/x^2", 1, 1, 0.01);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.000001f);
 
-            PointDouble actual = method.FindAbsoluteMin().Last();
+            PointF actual = method.FindAbsoluteMin().Last().Optimal;
 
-            PointDouble expected = new PointDouble(1.588, 15.119);
+            PointF expected = new PointF(-0.8559f, -17.2275f);
 
             Assert.Equal(actual.X, expected.X, 0.0001);
-            Assert.Equal(actual.Y, expected.Y, 0.0001);*/
+            Assert.Equal(actual.Y, expected.Y, 0.0001);
         }
         [Fact]
         public void TestLastValueNumberThree()

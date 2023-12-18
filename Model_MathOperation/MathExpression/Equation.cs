@@ -49,9 +49,10 @@ namespace Math_Model.MathExpression
         }
         private string ArgumemtToString(float argument)
         {
+            var format = "#############0.####################";
             string argumentStr;
             if (argument < 0)
-                argumentStr = '(' + argument.ToString() + ')';
+                argumentStr = '(' + argument.ToString(format) + ')';
             else
                 argumentStr = argument.ToString();
             return argumentStr;

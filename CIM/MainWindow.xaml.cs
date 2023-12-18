@@ -4,6 +4,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using Math_Model;
 using Math_Model.MathExpression;
@@ -67,14 +69,22 @@ namespace CIM
 
             try
             {
-                //InputTable(points);
-                InputChartScottPlot(points);
+                ChartClear();
+                InputTable(points);
+                PaintOptimavationProgress(points);
+                PaintInterpolationPolinoms(points);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка при отрисовке");
             }
         }
+
+        private void ChartClear()
+        {
+            chart_scottPlot.Plot.Clear();
+        }
+
         public bool CheckCoorectFunInput(string textFun)
         {
             try
@@ -88,35 +98,69 @@ namespace CIM
                 return false;
             }
         }
-        private void InputTable(List<PointF> points) 
-        { 
-            dg_OutputResult.ItemsSource = points;
-        }
-        private void InputChartScottPlot(List<ResultCIM> points)
+        private void InputTable(List<ResultCIM> points) 
         {
-            chart_scottPlot.Plot.Clear();
+            DataTable table = new DataTable();
 
-            double[] dataX = new double[points.Count];
-            double[] dataY = new double[points.Count];
-
+            table.Columns.Add("№");
+            table.Columns.Add("координата x");
+            table.Columns.Add("значение функции");
+           
+            for (int i = 0; i < points.Count; i++)
+            {
+                var newRow = table.NewRow();
+                newRow["№"] = i + 1;
+                newRow["координата x"] = points[i].Optimal.X;
+                newRow["значение функции"] = points[i].Optimal.Y;
+                table.Rows.Add(newRow);
+            }
+            dg_OutputResult.DataContext = table;
+        }
+        private void PaintInterpolationPolinoms(List<ResultCIM> points)
+        {
             double[][] PolinomsX = new double[points.Count][];
             double[][] PolinomsY = new double[points.Count][];
 
+            int j = 0;
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (points[i].PolinomInterval.Count != 0)
+                {
+                    j++;
+                    PolinomsX[i] = points[i].PolinomInterval.Select(point => (double)point.X).ToArray();
+                    PolinomsY[i] = points[i].PolinomInterval.Select(point => (double)point.Y).ToArray();
+
+                    chart_scottPlot.Plot.AddScatter(PolinomsX[i], PolinomsY[i], Color.Blue, label: $"InterpolationPolinom {j}");
+                }
+            }
+            chart_scottPlot.Plot.Legend();
+            chart_scottPlot.Refresh();
+        }
+        private void PaintOptimavationProgress(List<ResultCIM> points)
+        {
+            double[] dataX = new double[points.Count];
+            double[] dataY = new double[points.Count];
+            
             for (int i = 0; i < points.Count; i++)
             {
                 dataX[i] = points[i].Optimal.X;
                 dataY[i] = points[i].Optimal.Y;
-                if (points[i].PolinomInterval.Count != 0)
-                {
-                    PolinomsX[i] = points[i].PolinomInterval.Select(point => (double)point.X).ToArray();
-                    PolinomsY[i] = points[i].PolinomInterval.Select(point => (double)point.Y).ToArray();
 
-                    chart_scottPlot.Plot.AddScatter(PolinomsX[i], PolinomsY[i], Color.Blue, label: "Polinom");
-                }
+                var myDraggableMarker = new ScottPlot.Plottable.DraggableMarkerPlot()
+                {
+                    X = points[i].Optimal.X,
+                    Y = points[i].Optimal.Y,
+                    Color = Color.Green,
+                    MarkerSize = 8,
+                    Text = $"x{i}",
+                };
+                myDraggableMarker.TextFont.Size = 15;
+
+                chart_scottPlot.Plot.Add(myDraggableMarker);
             }
+            chart_scottPlot.Plot.AddScatter(dataX, dataY, Color.Green, label: "Optimization");
             
-            chart_scottPlot.Plot.AddScatter(dataX,dataY, Color.Green, label: "Optimization");
-            // plot the original vs interpolated lines
+
             chart_scottPlot.Plot.Legend();
             chart_scottPlot.Refresh();
         }

@@ -32,13 +32,42 @@ namespace Math_Model
             List<ResultCIM> result = new List<ResultCIM>() {new ResultCIM(new PointF(StartPoint,SolveValueFun(StartPoint))) };
             IntervalWithExtreme intervalWithExtreme = SolveFirstInterval();
 
-            ResultCIM localResult = FindOptimalArgument(intervalWithExtreme); // шаг 5-6
-            result.Add(FindOptimalArgument(intervalWithExtreme));
-            result.AddRange(LoopingSearchOptimum(intervalWithExtreme, localResult.Optimal.X));
+            List<ResultCIM> resultCIMs = LoopingSearchOptimum(intervalWithExtreme);
+            result.AddRange(resultCIMs);
 
             return result;
         }
+        private List<ResultCIM> LoopingSearchOptimum(IntervalWithExtreme interval)
+        {
+            List<ResultCIM> result = new List<ResultCIM>();
+            ResultCIM firstResult = FindOptimalArgument(interval); // шаг 5-6
+            result.Add(firstResult);
 
+            float optimalArgument = firstResult.Optimal.X;
+
+            float ValueDerFun = SolveValueDerivativeFun(optimalArgument);
+            while (Math.Abs(ValueDerFun) > Accuracy && result.Count < 10)
+            {
+                if (ValueDerFun * SolveValueDerivativeFun(interval.StartPoint) < 0)
+                {
+                    float secondArgument = interval.StartPoint;
+                    float firstArgument = optimalArgument;//localResult.Optimal.X
+                    interval = new IntervalWithExtreme(firstArgument, secondArgument);
+                }
+                else if (ValueDerFun * SolveValueDerivativeFun(interval.EndPoint) < 0)
+                {
+                    float firstArgument = optimalArgument;
+                    interval = new IntervalWithExtreme(firstArgument, interval.EndPoint);
+                }
+                else return result;
+                ResultCIM localResult = FindOptimalArgument(interval);
+                optimalArgument = localResult.Optimal.X;    
+                result.Add(localResult);
+                ValueDerFun = SolveValueDerivativeFun(optimalArgument);
+            }
+
+            return result;
+        }
         private IntervalWithExtreme SolveFirstInterval()
         {
             int signIteretion = FindSignIteretion(StartPoint); // шаг 3
@@ -51,32 +80,7 @@ namespace Math_Model
 
             return intervalWithExtreme;
         }
-        private List<ResultCIM> LoopingSearchOptimum(IntervalWithExtreme interval, float optimalArgument)
-        {
-            List<ResultCIM> result = new List<ResultCIM>();
-            IntervalWithExtreme newInterval = new IntervalWithExtreme(interval.StartPoint, interval.EndPoint);
-            float ValueDerFun = SolveValueDerivativeFun(optimalArgument);
-            while (Math.Abs(ValueDerFun) > Accuracy && result.Count<10)
-            {
-                if (ValueDerFun * SolveValueDerivativeFun(newInterval.StartPoint) < 0)
-                {
-                    float secondArgument = newInterval.StartPoint;
-                    float firstArgument = optimalArgument;
-                    newInterval = new IntervalWithExtreme(firstArgument, secondArgument);
-                }
-                else if (ValueDerFun * SolveValueDerivativeFun(newInterval.EndPoint) < 0)
-                {
-                    float firstArgument = optimalArgument;
-                    newInterval = new IntervalWithExtreme(firstArgument, newInterval.EndPoint);
-                }
-                else throw new Exception("хуйня");
-                ResultCIM localResult = FindOptimalArgument(newInterval);
-                result.Add(localResult);
-                ValueDerFun = SolveValueDerivativeFun(localResult.Optimal.X);
-            }
 
-            return result;
-        }
 
         private ResultCIM FindOptimalArgument(IntervalWithExtreme interval)
         {
@@ -86,65 +90,20 @@ namespace Math_Model
             float valueDerFunInFirstArgument = SolveValueDerivativeFun(interval.StartPoint);
             float valueDerFunInSecondArgument = SolveValueDerivativeFun(interval.EndPoint);
 
-            float z = 3 * (valueFunInFirstArgument - valueFunInSecondArgument) / (interval.EndPoint - interval.StartPoint) + valueDerFunInFirstArgument + valueDerFunInSecondArgument;
+            CubicPolinom cubicPolinom = new CubicPolinom(interval, valueFunInFirstArgument, valueFunInSecondArgument, valueDerFunInFirstArgument, valueDerFunInSecondArgument);
 
-            float w = SolveWArg(interval.StartPoint,interval.EndPoint,valueDerFunInFirstArgument,valueDerFunInSecondArgument,z);
-
-            float u = (valueDerFunInSecondArgument + w - z) / (valueDerFunInSecondArgument - valueDerFunInFirstArgument + 2 * w);
-
-            float optimalArgument = SolveOptimalArgument(interval,u);
-
-            CubicPolinom cubicPolinom =  new CubicPolinom(interval, valueFunInFirstArgument, valueDerFunInFirstArgument, valueDerFunInSecondArgument, z);
+            float optimalArgument = cubicPolinom.FindMin();
 
             ResultCIM result = new ResultCIM
                 (
                 new PointF(interval.StartPoint, valueFunInFirstArgument),
                 new PointF(interval.EndPoint, valueFunInSecondArgument),
                 new PointF(optimalArgument, SolveValueFun(optimalArgument)),
-                cubicPolinom.SolvePoint(interval,10)
+                cubicPolinom.SolvePoint(20)
                 );
 
 
             return result;
-        }
-        private float SolveOptimalArgument(IntervalWithExtreme interval, float u)
-        {
-            float optimalArgument;
-
-            if (u < 0)
-                optimalArgument = interval.EndPoint;
-            else if (u > 1)
-                optimalArgument = interval.StartPoint;
-            else optimalArgument = interval.EndPoint - u * (interval.EndPoint - interval.StartPoint);
-
-            optimalArgument = FulfillDescendingCondition(optimalArgument, interval.StartPoint); // шаг 6
-
-            return optimalArgument;
-        }
-        private float SolveWArg(float firstArgument, float secondArgument, float valueDerFunInFirstArgument, float valueDerFunInSecondArgument, float z)
-        {
-            float w;
-            int signOperationForSolveW;
-
-            if (firstArgument < secondArgument) 
-                signOperationForSolveW = 1;
-            else if (firstArgument > secondArgument) 
-                signOperationForSolveW = -1;
-            else 
-                throw new Exception("точка вместо интервала, очень интерестно");
-            if (z * z >= valueDerFunInFirstArgument * valueDerFunInSecondArgument)
-                w = signOperationForSolveW * (float)Math.Pow((z * z - valueDerFunInFirstArgument * valueDerFunInSecondArgument), 0.5);
-            else
-                throw new Exception("корень из отрицательного числа");
-            return w;
-        }
-
-        private float FulfillDescendingCondition(float optimalArgument, float firstArgument)
-        {
-            double valueFunInFirstArgument = SolveValueFun(firstArgument);
-            while (SolveValueFun(optimalArgument) >= valueFunInFirstArgument)
-                optimalArgument -= (float)0.5 * (optimalArgument - firstArgument);
-            return optimalArgument;
         }
         private int FindPowArguments(int signIteretion)
         {

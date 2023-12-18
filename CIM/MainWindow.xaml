@@ -55,7 +55,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="Таблица">
-                <DataGrid x:Name="dg_OutputResult"/>
+                <DataGrid x:Name="dg_OutputResult" ItemsSource="{Binding}"/>
             </TabItem>
             <TabItem Header="Инструкция">
                 

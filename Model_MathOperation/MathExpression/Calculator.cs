@@ -26,6 +26,7 @@ namespace Math_Model.MathExpression
                 return (float)_result;
             }
         }
+        readonly string _format = "#0.####################";
         private static float StepCalculate(string expression)
         {
             while (true)
@@ -59,7 +60,7 @@ namespace Math_Model.MathExpression
                 float number;
                 if (float.TryParse(expression, out number))
                     return number;
-                else throw new Exception("не удалось преобразлвать строку в число");
+                else throw new Exception("не удалось преобразовать строку в число");
             }
         }
 
