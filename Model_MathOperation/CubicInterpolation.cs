@@ -7,12 +7,14 @@ namespace Math_Model
 {
     public class CubicInterpolation
     {
-        public CubicInterpolation(Equation function, Equation derivativeFunction, float startPoint, float step, float accuracy)
+        public CubicInterpolation(Equation function, Equation derivativeFunction, float startPoint, float step, float accuracy,int countIterution)
         {
             if (step <= 0)
                 throw new Exception("шаг должен быть больше нуля");
             if (accuracy <= 0)
                 throw new Exception("точность должена быть больше нуля");
+            if (countIterution <= 1 || countIterution > 50)
+                throw new Exception("количество итераций должно быть от 2 до 50");
             else
             {
                 Function = function;
@@ -20,6 +22,7 @@ namespace Math_Model
                 StartPoint = startPoint;
                 Step = step;
                 Accuracy = accuracy;
+                _countIterution = countIterution;
             }
         }
         public Equation Function { get; }
@@ -27,6 +30,7 @@ namespace Math_Model
         private float StartPoint { get; }
         private float Step { get; }
         private float Accuracy { get; }
+        private int _countIterution;
         public List<ResultCIM> FindAbsoluteMin()
         {
             List<ResultCIM> result = new List<ResultCIM>() {new ResultCIM(new PointF(StartPoint,SolveValueFun(StartPoint))) };
@@ -46,7 +50,7 @@ namespace Math_Model
             float optimalArgument = firstResult.Optimal.X;
 
             float ValueDerFun = SolveValueDerivativeFun(optimalArgument);
-            while (Math.Abs(ValueDerFun) > Accuracy && result.Count < 10)
+            while (Math.Abs(ValueDerFun) > Accuracy && result.Count < _countIterution)
             {
                 if (ValueDerFun * SolveValueDerivativeFun(interval.StartPoint) < 0)
                 {

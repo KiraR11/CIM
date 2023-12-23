@@ -21,24 +21,27 @@
         <Grid x:Name="GridUserInput" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <TextBlock Text="Введите функцию:" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
-            <TextBox Grid.Row="1" Margin="10" VerticalAlignment="Top" Name="tb_Fun" Text="2x^2+16/x"/>
+            <TextBox Grid.Row="1" Margin="10,0,10,10" VerticalAlignment="Top" Name="tb_Fun" Text="2x^2+16/x"/>
             
             <TextBlock Text="Введите производную функции:" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
-            <TextBox Grid.Row="3" Margin="10" VerticalAlignment="Top" Name="tb_DefFun" Text="4x-16/x^2"/>
+            <TextBox Grid.Row="3" Margin="10,0,10,10" VerticalAlignment="Top" Name="tb_DefFun" Text="4x-16/x^2"/>
 
             <TextBlock Text="Введите коор-ту начальной точки:" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
-            <TextBox Grid.Row="5" Margin="10" VerticalAlignment="Top" Name="tb_StartPoint" Text="1"/>
+            <TextBox Grid.Row="5" Margin="10,0,10,10" VerticalAlignment="Top" Name="tb_StartPoint" Text="1"/>
 
             <TextBlock Text="Введите шаг:" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
             <TextBox Grid.Row="6" VerticalAlignment="Center" Name="tb_Step" Margin="120,0,10,0" Text="1"/>
@@ -46,7 +49,21 @@
             <TextBlock Text="Введите точность:" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
             <TextBox Grid.Row="7" VerticalAlignment="Center" Name="tb_Accuracy" Margin="120,0,10,0" Text="0,01"/>
 
-            <Button Grid.Row="8" Content="Найти минимум функции" Width="150" Height="25" Click="Button_Click"/>
+            <TextBlock Text="Введите кол-во итераций:" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="8" VerticalAlignment="Center" Name="tb_CountIterution" Margin="155,0,10,0" Text="10"/>
+
+            <CheckBox x:Name="cb_printPaintPolinom" Grid.Row="9" VerticalAlignment="Center" IsChecked="True" Margin="10">
+                <TextBlock>
+                    <Run Text="Рисовать апроксимирующие "/>
+                    <LineBreak/>
+                    <Run Text="полиномы"/>
+                </TextBlock>
+            </CheckBox>
+            
+            <Button Grid.Row="10" Content="Найти минимум функции" Width="150" Height="25" Click="Button_Click"/>
+
+            <TextBlock x:Name="tb_resultPoint" Grid.Row="11" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+            
         </Grid>
         <TabControl Grid.Column="1">
             <TabItem Header="График">

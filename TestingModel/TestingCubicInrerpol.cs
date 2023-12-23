@@ -10,7 +10,7 @@ namespace TestingModel
         [Fact]
         public void SolveFromNegativPoint()
         {
-            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), -1, 1, 0.01f);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), -1, 1, 0.01f, 10);
 
             Action action = () => { ResultCIM actual = method.FindAbsoluteMin().Last(); };
 
@@ -19,7 +19,7 @@ namespace TestingModel
         [Fact]
         public void TestLastValueNumberOne()
         {
-            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01f);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.01f,10);
 
             PointF actual = method.FindAbsoluteMin().Last().Optimal; 
 
@@ -31,7 +31,7 @@ namespace TestingModel
         [Fact]
         public void TestLastValueNumberTwo()
         {
-            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.000001f);
+            CubicInterpolation method = new CubicInterpolation(new Equation("2x^2+16/x"), new Equation("4x-16/x^2"), 1, 1, 0.000001f, 10);
 
             PointF actual = method.FindAbsoluteMin().Last().Optimal;
 

@@ -27,89 +27,152 @@ namespace CIM
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Equation fun;
-            Equation defFun;
-            CubicInterpolation cubicInterpolation;
-            float startPoint;
-            float step;
-            float accuracy;
-            List<ResultCIM> points;
-
             try
             {
-                startPoint = (float)Double.Parse(tb_StartPoint.Text);
-                step = (float)Double.Parse(tb_Step.Text);
-                accuracy = (float)Double.Parse(tb_Accuracy.Text);
+                List<ResultCIM> resultPoints = CalcResultPoints();
+
+                OutputResults(resultPoints);
+            }
+            catch (ArgumentException ex)
+            {
+                OutputErrorMessage(ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}","Некорректные данные в параменрах метода");
-                return;
-            }
-
-            if (CheckCoorectFunInput(tb_Fun.Text))
-                fun = new Equation(tb_Fun.Text);
-            else return;
-
-            if (CheckCoorectFunInput(tb_DefFun.Text))
-                defFun = new Equation(tb_DefFun.Text);
-            else return;
-
-
-            try
-            {
-                cubicInterpolation = new CubicInterpolation(fun, defFun, startPoint, step, accuracy);
-                points = cubicInterpolation.FindAbsoluteMin();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Некорректные данные при подсчете");
-                return;
-            }
-
-            try
-            {
-                ChartClear();
-                InputTable(points);
-                PaintOptimavationProgress(points);
-                PaintInterpolationPolinoms(points);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка при отрисовке");
+                OutputErrorMessage(ex.Message);
             }
         }
+        private List<ResultCIM> CalcResultPoints()
+        {
+            float startPoint = GetStartPoint();
+            float step = GetStep();
+            float accuracy = GetAccuracy();
+            int countIterution = GetCountIteration();
+            
+            Equation fun = GetFun();
+            Equation defFun = GetDerivativeFun();
 
+            CubicInterpolation cubicInterpolation = new CubicInterpolation(fun, defFun, startPoint, step, accuracy,countIterution);
+            return cubicInterpolation.FindAbsoluteMin();
+        }
+
+        private void OutputResults(List<ResultCIM> resultPoints)
+        {
+            ChartClear();
+
+            PrintTable(resultPoints);
+            PaintOptimavationProgress(resultPoints);
+
+            if(CheckRenderingResolution())
+                PaintInterpolationPolinoms(resultPoints);
+
+            ResultCIM minPoint = FindMinPoint(resultPoints);
+            PrintResultPoint(minPoint);
+        }
+
+        private void PrintResultPoint(ResultCIM minPoint)
+        {
+            tb_resultPoint.Text = $"Найденный минимум:\n ({minPoint.Optimal.X};{minPoint.Optimal.Y})";
+        }
+
+        private ResultCIM FindMinPoint(List<ResultCIM> resultPoints)
+        {
+            ResultCIM resultCIM = resultPoints[0];
+            foreach (ResultCIM resultPoint in resultPoints)
+            {
+                if(resultPoint.Optimal.Y < resultCIM.Optimal.Y)
+                    resultCIM = resultPoint;
+            }
+            return resultCIM;
+        }
+
+        private bool CheckRenderingResolution()
+        {
+            bool? result = cb_printPaintPolinom.IsChecked;
+            if (result != null)
+                return result.Value;
+            else 
+                return false;
+        }
+        private float GetStartPoint()
+        {
+            if (CheckCorrectSingleValue(tb_StartPoint.Text))
+            {
+                return Single.Parse(tb_StartPoint.Text);
+            }
+            else throw new ArgumentException("Некорректные данные в веденной начальной точке");
+        }
+
+        private int GetCountIteration()
+        {
+            if (CheckCorrectSingleValue(tb_CountIterution.Text))
+            {
+                return Int32.Parse(tb_CountIterution.Text);
+            }
+            else throw new ArgumentException("Некорректные данные в веденном максимальном количестве итераций");
+        }
+
+        private float GetStep()
+        {
+            if (CheckCorrectSingleValue(tb_Step.Text))
+            {
+                return Single.Parse(tb_Step.Text);
+            }
+            else throw new ArgumentException("Некорректные данные в веденном шаге");
+        }
+        private float GetAccuracy()
+        {
+            if (CheckCorrectSingleValue(tb_Accuracy.Text))
+            {
+                return Single.Parse(tb_Accuracy.Text);
+            }
+            else throw new ArgumentException("Некорректные данные в веденной точности");
+        }
+        private bool CheckCorrectSingleValue(string inputValue)
+        {
+            if (string.IsNullOrEmpty(inputValue))
+                return false;
+            else
+            {
+                try
+                {
+                    Single.Parse(inputValue);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+        private Equation GetFun()
+        {
+            return new Equation(tb_Fun.Text);
+        }
+        private Equation GetDerivativeFun()
+        {
+            return new Equation(tb_DefFun.Text);
+        }
+        private void OutputErrorMessage(string messageThis)
+        {
+            MessageBox.Show(messageThis,"Ошибка");
+        }
         private void ChartClear()
         {
             chart_scottPlot.Plot.Clear();
         }
-
-        public bool CheckCoorectFunInput(string textFun)
-        {
-            try
-            {
-                Equation equation = new Equation(textFun);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Некорректные данные в функциях");
-                return false;
-            }
-        }
-        private void InputTable(List<ResultCIM> points) 
+        private void PrintTable(List<ResultCIM> points) 
         {
             DataTable table = new DataTable();
 
-            table.Columns.Add("№");
+            table.Columns.Add("x№");
             table.Columns.Add("координата x");
             table.Columns.Add("значение функции");
            
             for (int i = 0; i < points.Count; i++)
             {
                 var newRow = table.NewRow();
-                newRow["№"] = i + 1;
+                newRow["x№"] = i;
                 newRow["координата x"] = points[i].Optimal.X;
                 newRow["значение функции"] = points[i].Optimal.Y;
                 table.Rows.Add(newRow);
@@ -130,7 +193,10 @@ namespace CIM
                     PolinomsX[i] = points[i].PolinomInterval.Select(point => (double)point.X).ToArray();
                     PolinomsY[i] = points[i].PolinomInterval.Select(point => (double)point.Y).ToArray();
 
-                    chart_scottPlot.Plot.AddScatter(PolinomsX[i], PolinomsY[i], Color.Blue, label: $"InterpolationPolinom {j}");
+                    if(j == 1)
+                        chart_scottPlot.Plot.AddScatter(PolinomsX[i], PolinomsY[i], Color.Blue, label: $"InterpolationPolinom");
+                    else
+                        chart_scottPlot.Plot.AddScatter(PolinomsX[i], PolinomsY[i], Color.Blue);
                 }
             }
             chart_scottPlot.Plot.Legend();
@@ -159,7 +225,6 @@ namespace CIM
                 chart_scottPlot.Plot.Add(myDraggableMarker);
             }
             chart_scottPlot.Plot.AddScatter(dataX, dataY, Color.Green, label: "Optimization");
-            
 
             chart_scottPlot.Plot.Legend();
             chart_scottPlot.Refresh();
