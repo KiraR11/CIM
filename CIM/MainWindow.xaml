@@ -75,7 +75,34 @@
                 <DataGrid x:Name="dg_OutputResult" ItemsSource="{Binding}"/>
             </TabItem>
             <TabItem Header="Инструкция">
-                
+                <TextBlock>
+                    <Run Text="     1.Ввод функций:"/>
+                    <LineBreak/>
+                    <LineBreak/>
+                    <Run Text="Ввод функций поддерживает такие опрерации как:"/>  
+                    <LineBreak/>
+                    <Run Text=" ● + -> Сложение"/>
+                    <LineBreak/>
+                    <Run Text=" ● - -> Вычитание"/>
+                    <LineBreak/>
+                    <Run Text=" ● * -> Умножение"/>
+                    <LineBreak/>
+                    <Run Text=" ● / -> Деление"/>
+                    <LineBreak/>
+                    <Run Text=" ● ^ -> Степень"/>
+                    <LineBreak/>
+                    <Run Text=" ● √ -> Взятие квадратного корня"/>
+                    <LineBreak/>
+                    <LineBreak/>
+                    <Run Text="     2.Ввод Параметров алгоритма:"/>
+                    <LineBreak/>
+                    <LineBreak/>
+                    <Run Text=" ● Значение шага должно быть больше нуля"/>
+                    <LineBreak/>
+                    <Run Text=" ● Значение точности должно быть больше нуля"/>
+                    <LineBreak/>
+                    <Run Text=" ● Значение максимального количества итераций должно быть от 2 до 30"/>
+                </TextBlock>
             </TabItem>
         </TabControl>
 
